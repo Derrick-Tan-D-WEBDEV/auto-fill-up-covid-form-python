@@ -18,11 +18,9 @@ mydb = mysql.connector.connect(
 #team_json
 team = None
 
+
 def auto_fill():
-    PATH = "path-for-chrome-driver"
-    options = webdriver.ChromeOptions()
-    options.add_argument("--start-maximized")
-    driver = webdriver.Chrome(PATH,options=options)
+
     driver.get("https://rocky-plains-03473.herokuapp.com/")
     #click button
     driver.find_element_by_xpath('/html/body/div/div/div[2]/div/a[2]/button').click()
@@ -36,17 +34,23 @@ def auto_fill():
     driver.find_element_by_xpath('/html/body/div/div/form/div[3]/div[1]/label').click()
     driver.find_element_by_xpath('/html/body/div/div/form/div[5]/div/button').click()
     time.sleep(10)
-    driver.save_screenshot("screenshot.png")
-    time.sleep(10)
+    #driver.save_screenshot("screenshot.png")
+    #time.sleep(10)
 
 def get_team_details():
     try: 
-        mycursor = mydb.cursor()
-        sql = "SELECT * FROM employee_details WHERE activate = 0"
-        val = (date,)
+        mycursor = mydb.cursor(dictionary=True)
+        sql = "SELECT * FROM employee WHERE activate = 1"
+        val = ()
         mycursor.execute(sql,val)
-        team = mycursor.fetchall()
+        return mycursor.fetchall()
     except Exception as error:
         print(error)
 
-
+team = get_team_details()
+print(team[0]['name'])
+#init_chrome_driver
+PATH = "path-for-chrome-driver"
+options = webdriver.ChromeOptions()
+options.add_argument("--start-maximized")
+driver = webdriver.Chrome(PATH,options=options)
